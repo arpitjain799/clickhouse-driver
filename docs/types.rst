@@ -282,6 +282,22 @@ INSERT types: :class:`list`, :class:`tuple`.
 
 SELECT type: :class:`tuple`.
 
+.. note::
+
+    Currently, for ClickHouse server 23.3.1, JSON column ``Object('json')``
+    and **namedtuple** column ``Tuple(b Int8)`` have the same binary
+    representation. There is no way to distinct one column from another without
+    additional inspection like ``DESCRIBE TABLE`` `query
+    <https://github.com/ClickHouse/ClickHouse/issues/48822>`_. But this will
+    not work for complicated queries with joins.
+
+    To interpret ClickHouse namedtuple column as Python tuple set
+    ``namedtuple_as_json`` setting to ``False``.
+
+    .. code-block:: python
+
+        client.execute(.., settings={'namedtuple_as_json': False})
+
 
 Nested(flatten_nested=1, default)
 ---------------------------------
@@ -422,3 +438,16 @@ These types are just aliases:
 * Ring: Array(Point)
 * Polygon: Array(Ring)
 * MultiPolygon: Array(Polygon)
+
+
+Object('json')
+--------------
+
+*New in version 0.2.6.*
+
+INSERT types: :class:`dict`.
+
+SELECT type: :class:`dict`.
+
+``orjson`` and ``ujson`` implementations are supported for dumping data into
+json during ``INSERT``.

@@ -67,7 +67,8 @@ class Client(object):
         'opentelemetry_traceparent',
         'opentelemetry_tracestate',
         'quota_key',
-        'input_format_null_as_default'
+        'input_format_null_as_default',
+        'namedtuple_as_json'
     )
 
     def __init__(self, *args, **kwargs):
@@ -97,6 +98,9 @@ class Client(object):
             ),
             'input_format_null_as_default': self.settings.pop(
                 'input_format_null_as_default', False
+            ),
+            'namedtuple_as_json': self.settings.pop(
+                'namedtuple_as_json', True
             )
         }
 

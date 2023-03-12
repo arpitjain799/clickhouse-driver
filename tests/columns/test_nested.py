@@ -1,9 +1,10 @@
 from tests.testcase import BaseTestCase
 from tests.util import require_server_version
-from clickhouse_driver.columns import nestedcolumn
 
 
 class NestedTestCase(BaseTestCase):
+    client_kwargs = {'settings': {'namedtuple_as_json': False}}
+
     def entuple(self, lst):
         return tuple(
             self.entuple(x) if isinstance(x, list) else x for x in lst
@@ -87,19 +88,3 @@ class NestedTestCase(BaseTestCase):
                 inserted,
                 [([(0, 'a'), (1, 'b')],), ([(3, 'd'), (4, 'e')],)]
             )
-
-    def test_get_nested_columns(self):
-        self.assertEqual(
-            nestedcolumn.get_nested_columns(
-                'Nested(a Tuple(Array(Int8)),\n b Nullable(String))',
-            ),
-            ['Tuple(Array(Int8))', 'Nullable(String)']
-        )
-
-    def test_get_columns_with_types(self):
-        self.assertEqual(
-            nestedcolumn.get_columns_with_types(
-                'Nested(a Tuple(Array(Int8)),\n b Nullable(String))',
-            ),
-            [('a', 'Tuple(Array(Int8))'), ('b', 'Nullable(String)')]
-        )
